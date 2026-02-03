@@ -84,32 +84,32 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 
           {/* Docker badge */}
           {project.dockerConfig && (
-            <div className="absolute top-3 right-3 glass px-2 py-1 rounded-md flex items-center gap-1">
-              <svg className="w-4 h-4 text-blue-400" viewBox="0 0 24 24" fill="currentColor">
+            <div className="absolute top-3 right-3 px-2 py-1 rounded-md flex items-center gap-1 bg-yellow-500/20 border border-yellow-500/30">
+              <svg className="w-4 h-4 text-yellow-400" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185zm-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185zm0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.186.185.186zm-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.186.185.186zm-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.186.186.186zm5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185zm-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185zm-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.185-.186H5.136a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185zm-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185zm8.854-2.715h2.118a.186.186 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185zm-2.93-2.715h2.12a.186.186 0 00.184-.185V3.574a.186.186 0 00-.185-.185h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185z" />
               </svg>
-              <span className="text-xs text-gray-300">Docker Ready</span>
+              <span className="text-xs text-yellow-400 font-semibold uppercase tracking-wider">WIP</span>
             </div>
           )}
         </div>
 
         {/* Content */}
-        <div className="p-6 flex-grow flex flex-col">
+        <div className="p-6 flex-grow flex flex-col bg-dark-800/90">
           <h3 className="text-xl font-bold text-white mb-2">{project.name}</h3>
-          <p className="text-gray-400 text-sm mb-4 flex-grow">{project.description}</p>
+          <p className="text-gray-200 text-sm mb-4 flex-grow">{project.description}</p>
 
           {/* Technologies */}
           <div className="flex flex-wrap gap-2 mb-4">
             {project.technologies.slice(0, 4).map((tech) => (
               <span
                 key={tech}
-                className="px-2 py-1 text-xs bg-dark-700 text-gray-300 rounded-md"
+                className="px-2 py-1 text-xs bg-primary-500/20 text-primary-300 border border-primary-500/30 rounded-md font-medium"
               >
                 {tech}
               </span>
             ))}
             {project.technologies.length > 4 && (
-              <span className="px-2 py-1 text-xs bg-dark-700 text-gray-400 rounded-md">
+              <span className="px-2 py-1 text-xs bg-dark-600 text-gray-300 rounded-md">
                 +{project.technologies.length - 4}
               </span>
             )}

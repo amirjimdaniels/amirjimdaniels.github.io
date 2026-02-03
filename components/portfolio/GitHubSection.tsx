@@ -122,19 +122,19 @@ export default function GitHubSection() {
           className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12"
         >
           <Card className="p-6 text-center" hover={false}>
-            <div className="text-3xl font-bold text-primary-400">{repos.length}</div>
-            <div className="text-gray-400 text-sm mt-1">Repositories</div>
+            <div className="text-3xl font-bold text-primary-400">56+</div>
+            <div className="text-gray-400 text-sm mt-1">Contributions This Year</div>
           </Card>
           <Card className="p-6 text-center" hover={false}>
-            <div className="text-3xl font-bold text-yellow-400">{totalStars}</div>
-            <div className="text-gray-400 text-sm mt-1">Total Stars</div>
+            <div className="text-3xl font-bold text-yellow-400">3</div>
+            <div className="text-gray-400 text-sm mt-1">Projects Starred</div>
           </Card>
           <Card className="p-6 text-center" hover={false}>
-            <div className="text-3xl font-bold text-green-400">{totalForks}</div>
-            <div className="text-gray-400 text-sm mt-1">Total Forks</div>
+            <div className="text-3xl font-bold text-green-400">2</div>
+            <div className="text-gray-400 text-sm mt-1">Projects Forked</div>
           </Card>
           <Card className="p-6 text-center" hover={false}>
-            <div className="text-3xl font-bold text-purple-400">{Object.keys(languages).length}</div>
+            <div className="text-3xl font-bold text-purple-400">4</div>
             <div className="text-gray-400 text-sm mt-1">Languages</div>
           </Card>
         </motion.div>

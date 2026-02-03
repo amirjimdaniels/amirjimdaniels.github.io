@@ -114,7 +114,12 @@ export default function DemoSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl font-bold gradient-text mb-4">Live Demo Environment</h2>
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <h2 className="text-4xl font-bold gradient-text">Live Demo Environment</h2>
+            <span className="px-3 py-1 text-xs font-semibold bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 rounded-full uppercase tracking-wider">
+              WIP
+            </span>
+          </div>
           <p className="text-gray-400 max-w-2xl mx-auto">
             Select a project to spin up a live demo environment. Each demo runs in an isolated
             Docker container, giving you a real experience of the application.
