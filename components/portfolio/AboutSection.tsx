@@ -138,7 +138,7 @@ export default function AboutSection() {
             <div className="flex-shrink-0">
               <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-primary-500/30 shadow-lg shadow-primary-500/20">
                 <img
-                  src="/images/amirphoto.jpg"
+                  src="/images/amirphoto2.jpg"
                   alt="Amir Jim-Daniels"
                   className="w-full h-full object-cover"
                 />
