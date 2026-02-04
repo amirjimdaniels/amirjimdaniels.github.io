@@ -1,6 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 
 const skills = [
   { name: 'Java', level: 95 },
@@ -12,6 +13,75 @@ const skills = [
   { name: 'Docker', level: 65 },
   { name: 'And More...', level: 60 },
 ];
+
+const photos = [
+  { src: '/images/amirphoto3.jpg', alt: 'Amir Jim-Daniels - Professional' },
+  { src: '/images/amirphoto4.jpg', alt: 'Amir Jim-Daniels - Personable' },
+];
+
+function PhotoCarousel() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const nextPhoto = () => {
+    setCurrentIndex((prev) => (prev + 1) % photos.length);
+  };
+
+  const prevPhoto = () => {
+    setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length);
+  };
+
+  return (
+    <div className="flex-shrink-0 flex items-center gap-3">
+      {/* Left Arrow */}
+      <button
+        onClick={prevPhoto}
+        className="p-2 rounded-full bg-dark-700/50 hover:bg-primary-500/30 transition-colors group"
+        aria-label="Previous photo"
+      >
+        <svg
+          className="w-5 h-5 text-gray-400 group-hover:text-primary-400 transition-colors"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      {/* Photo Container */}
+      <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-primary-500/30 shadow-lg shadow-primary-500/20 relative">
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={currentIndex}
+            src={photos[currentIndex].src}
+            alt={photos[currentIndex].alt}
+            className="w-full h-full object-cover"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.3 }}
+          />
+        </AnimatePresence>
+      </div>
+
+      {/* Right Arrow */}
+      <button
+        onClick={nextPhoto}
+        className="p-2 rounded-full bg-dark-700/50 hover:bg-primary-500/30 transition-colors group"
+        aria-label="Next photo"
+      >
+        <svg
+          className="w-5 h-5 text-gray-400 group-hover:text-primary-400 transition-colors"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+    </div>
+  );
+}
 
 export default function AboutSection() {
   return (
@@ -135,15 +205,7 @@ export default function AboutSection() {
           className="mt-16 glass p-8 rounded-2xl"
         >
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <div className="flex-shrink-0">
-              <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-primary-500/30 shadow-lg shadow-primary-500/20">
-                <img
-                  src="/images/amirphoto3.jpg"
-                  alt="Amir Jim-Daniels"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
+            <PhotoCarousel />
             <div className="text-center md:text-left">
               <h3 className="text-2xl font-bold text-white mb-3">Why Work With Me?</h3>
               <p className="text-gray-300 text-lg leading-relaxed mb-4">
