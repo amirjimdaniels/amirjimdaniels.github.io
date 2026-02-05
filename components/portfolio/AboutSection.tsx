@@ -4,19 +4,34 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 
 const skills = [
-  { name: 'Java', level: 95 },
-  { name: 'Python', level: 90 },
-  { name: 'SQL', level: 85 },
+  { name: 'Java', level: 100 },
+  { name: 'Python', level: 100 },
+  { name: 'OOP', level: 100 },
+  { name: 'SQL', level: 90 },
+  { name: '.NET', level: 90 },
+  { name: 'C#', level: 85 },
   { name: 'TypeScript', level: 80 },
   { name: 'React/Next.js', level: 75 },
   { name: 'Node.js', level: 70 },
   { name: 'Docker', level: 65 },
-  { name: 'And More...', level: 60 },
 ];
 
 const photos = [
   { src: '/images/amirphoto3.jpg', alt: 'Amir Jim-Daniels - Professional' },
   { src: '/images/amirphoto4.jpg', alt: 'Amir Jim-Daniels - Personable' },
+];
+
+const courses = [
+  'Intro to Computer Science',
+  'Intermediate Computer Programming',
+  'Discrete Mathematics',
+  'Fundamental Data Structures, Algorithms & Applications',
+  'Computer Systems & Foundations',
+  'Human Computer Interaction',
+  'Software Engineering',
+  'Data Structures & Algorithms',
+  'Operating Systems',
+  'Elementary Statistics',
 ];
 
 function PhotoCarousel() {
@@ -176,12 +191,11 @@ export default function AboutSection() {
             viewport={{ once: true }}
             className="space-y-4"
           >
-            <h3 className="text-xl font-semibold text-white mb-6">Technical Skills</h3>
+            <h3 className="text-xl font-semibold text-white mb-6">Experience Strength</h3>
             {skills.map((skill, index) => (
               <div key={skill.name} className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-300">{skill.name}</span>
-                  <span className="text-primary-400">{skill.level}%</span>
                 </div>
                 <div className="h-2 bg-dark-700 rounded-full overflow-hidden">
                   <motion.div
@@ -194,6 +208,18 @@ export default function AboutSection() {
                 </div>
               </div>
             ))}
+            
+            {/* CS Courses */}
+            <div className="mt-8 pt-6 border-t border-dark-700">
+              <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Computer Science Coursework</h4>
+              <div className="flex flex-wrap gap-2">
+                {courses.map((course) => (
+                  <span key={course} className="px-2 py-1 bg-dark-700/50 text-gray-400 rounded text-xs">
+                    {course}
+                  </span>
+                ))}
+              </div>
+            </div>
           </motion.div>
         </div>
 
@@ -217,6 +243,23 @@ export default function AboutSection() {
                 <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm">Fun to Work With</span>
               </div>
             </div>
+          </div>
+        </motion.div>
+
+        {/* Built With Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-12 text-center"
+        >
+          <p className="text-gray-500 text-sm mb-3">This portfolio was built with</p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <span className="px-3 py-1.5 glass rounded-full text-xs text-gray-300">Next.js 14</span>
+            <span className="px-3 py-1.5 glass rounded-full text-xs text-gray-300">TypeScript</span>
+            <span className="px-3 py-1.5 glass rounded-full text-xs text-gray-300">Tailwind CSS</span>
+            <span className="px-3 py-1.5 glass rounded-full text-xs text-gray-300">Framer Motion</span>
+            <span className="px-3 py-1.5 glass rounded-full text-xs text-gray-300">Docker</span>
           </div>
         </motion.div>
       </div>
