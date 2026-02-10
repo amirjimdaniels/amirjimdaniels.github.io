@@ -148,7 +148,34 @@ const projects: Project[] = [
 
 ## Deployment
 
-### Vercel (Recommended)
+### GitHub Pages (Recommended for this repo)
+
+This site is configured to deploy automatically to GitHub Pages when you push to the `main` branch.
+
+**Setup Instructions:**
+
+1. Enable GitHub Pages in your repository settings:
+   - Go to Settings → Pages
+   - Under "Source", select "GitHub Actions"
+
+2. Push your changes to the `main` branch:
+   ```bash
+   git push origin main
+   ```
+
+3. The GitHub Actions workflow will automatically:
+   - Install dependencies
+   - Build the static site
+   - Deploy to GitHub Pages
+
+4. Your site will be available at: `https://yourusername.github.io/`
+
+**Important:** This configuration uses Next.js static export (`output: 'export'`), which means:
+- No server-side features (API routes, server components with dynamic data)
+- All pages are pre-rendered at build time
+- Images are unoptimized (no Next.js Image Optimization)
+
+### Vercel
 
 1. Push to GitHub
 2. Import project in [Vercel](https://vercel.com)
