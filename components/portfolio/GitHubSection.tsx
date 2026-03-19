@@ -6,72 +6,11 @@ import Card from '@/components/ui/Card';
 import { formatDate, getLanguageColor } from '@/lib/github';
 import { GitHubRepo } from '@/types';
 
-// Placeholder data - will be fetched from GitHub API in production
-const placeholderRepos: GitHubRepo[] = [
-  {
-    id: 1,
-    name: 'portfolio',
-    full_name: 'username/portfolio',
-    description: 'My personal portfolio website with Docker demos',
-    html_url: 'https://github.com/username/portfolio',
-    clone_url: 'https://github.com/username/portfolio.git',
-    homepage: 'https://portfolio.example.com',
-    language: 'TypeScript',
-    stargazers_count: 42,
-    forks_count: 12,
-    watchers_count: 42,
-    open_issues_count: 3,
-    created_at: '2024-01-15T00:00:00Z',
-    updated_at: '2026-01-20T00:00:00Z',
-    pushed_at: '2026-01-20T00:00:00Z',
-    topics: ['nextjs', 'portfolio', 'docker'],
-    default_branch: 'main',
-  },
-  {
-    id: 2,
-    name: 'awesome-project',
-    full_name: 'username/awesome-project',
-    description: 'An awesome open-source project',
-    html_url: 'https://github.com/username/awesome-project',
-    clone_url: 'https://github.com/username/awesome-project.git',
-    homepage: null,
-    language: 'Python',
-    stargazers_count: 128,
-    forks_count: 34,
-    watchers_count: 128,
-    open_issues_count: 8,
-    created_at: '2023-06-01T00:00:00Z',
-    updated_at: '2026-01-18T00:00:00Z',
-    pushed_at: '2026-01-18T00:00:00Z',
-    topics: ['python', 'automation'],
-    default_branch: 'main',
-  },
-  {
-    id: 3,
-    name: 'react-components',
-    full_name: 'username/react-components',
-    description: 'A collection of reusable React components',
-    html_url: 'https://github.com/username/react-components',
-    clone_url: 'https://github.com/username/react-components.git',
-    homepage: 'https://components.example.com',
-    language: 'JavaScript',
-    stargazers_count: 256,
-    forks_count: 48,
-    watchers_count: 256,
-    open_issues_count: 12,
-    created_at: '2022-03-10T00:00:00Z',
-    updated_at: '2026-01-15T00:00:00Z',
-    pushed_at: '2026-01-15T00:00:00Z',
-    topics: ['react', 'components', 'ui'],
-    default_branch: 'main',
-  },
-];
 
 export default function GitHubSection() {
-  const [repos, setRepos] = useState<GitHubRepo[]>(placeholderRepos);
-  const [isLoading, setIsLoading] = useState(false);
+  const [repos, setRepos] = useState<GitHubRepo[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Calculate stats
   const totalStars = repos.reduce((acc, repo) => acc + repo.stargazers_count, 0);
   const totalForks = repos.reduce((acc, repo) => acc + repo.forks_count, 0);
   const languages = repos.reduce((acc, repo) => {
@@ -81,22 +20,19 @@ export default function GitHubSection() {
     return acc;
   }, {} as Record<string, number>);
 
-  // In production, fetch from GitHub API
   useEffect(() => {
-    // Uncomment to fetch real data:
-    // const fetchRepos = async () => {
-    //   setIsLoading(true);
-    //   try {
-    //     const response = await fetch('/api/github/repos');
-    //     const data = await response.json();
-    //     setRepos(data);
-    //   } catch (error) {
-    //     console.error('Error fetching repos:', error);
-    //   } finally {
-    //     setIsLoading(false);
-    //   }
-    // };
-    // fetchRepos();
+    const fetchRepos = async () => {
+      try {
+        const response = await fetch('/api/github/repos');
+        const data = await response.json();
+        setRepos(data);
+      } catch (error) {
+        console.error('Error fetching repos:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchRepos();
   }, []);
 
   return (
@@ -122,19 +58,27 @@ export default function GitHubSection() {
           className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12"
         >
           <Card className="p-6 text-center" hover={false}>
-            <div className="text-3xl font-bold text-primary-400">56+</div>
-            <div className="text-gray-400 text-sm mt-1">Contributions This Year</div>
+            <div className="text-3xl font-bold text-primary-400">
+              {isLoading ? '—' : repos.length}
+            </div>
+            <div className="text-gray-400 text-sm mt-1">Public Repos</div>
           </Card>
           <Card className="p-6 text-center" hover={false}>
-            <div className="text-3xl font-bold text-yellow-400">3</div>
-            <div className="text-gray-400 text-sm mt-1">Projects Starred</div>
+            <div className="text-3xl font-bold text-yellow-400">
+              {isLoading ? '—' : totalStars}
+            </div>
+            <div className="text-gray-400 text-sm mt-1">Total Stars</div>
           </Card>
           <Card className="p-6 text-center" hover={false}>
-            <div className="text-3xl font-bold text-green-400">2</div>
-            <div className="text-gray-400 text-sm mt-1">Projects Forked</div>
+            <div className="text-3xl font-bold text-green-400">
+              {isLoading ? '—' : totalForks}
+            </div>
+            <div className="text-gray-400 text-sm mt-1">Total Forks</div>
           </Card>
           <Card className="p-6 text-center" hover={false}>
-            <div className="text-3xl font-bold text-purple-400">4</div>
+            <div className="text-3xl font-bold text-purple-400">
+              {isLoading ? '—' : Object.keys(languages).length}
+            </div>
             <div className="text-gray-400 text-sm mt-1">Languages</div>
           </Card>
         </motion.div>
@@ -167,7 +111,7 @@ export default function GitHubSection() {
           <div className="flex flex-wrap gap-4 mt-3">
             {Object.entries(languages)
               .sort((a, b) => b[1] - a[1])
-              .map(([lang, count]) => (
+              .map(([lang]) => (
                 <div key={lang} className="flex items-center gap-2">
                   <div
                     className="w-3 h-3 rounded-full"
@@ -181,6 +125,18 @@ export default function GitHubSection() {
 
         {/* Recent Repos */}
         <h3 className="text-xl font-semibold text-white mb-6">Recent Repositories</h3>
+        {isLoading && (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="glass rounded-xl p-6 animate-pulse">
+                <div className="h-5 bg-gray-700 rounded w-1/2 mb-3" />
+                <div className="h-4 bg-gray-700 rounded w-full mb-2" />
+                <div className="h-4 bg-gray-700 rounded w-3/4 mb-4" />
+                <div className="h-3 bg-gray-700 rounded w-1/3" />
+              </div>
+            ))}
+          </div>
+        )}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {repos.map((repo, index) => (
             <motion.div

@@ -1,13 +1,16 @@
 'use client';
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import { Project, ContainerInstance } from '@/types';
+import { Project } from '@/types';
 
-// Your actual projects with Docker configurations
-const demoProjects: Project[] = [
+interface DemoProject extends Project {
+  renderHosted?: boolean;
+}
+
+// Your actual projects with demo configurations
+const demoProjects: DemoProject[] = [
   {
     id: 'demo-1',
     name: 'RAG Demo',
@@ -15,11 +18,7 @@ const demoProjects: Project[] = [
     technologies: ['Python', 'RAG', 'LLM', 'AI'],
     featured: true,
     githubUrl: 'https://github.com/amirjimdaniels/RAG-demo',
-    dockerConfig: {
-      image: 'rag-demo:latest',
-      port: 8000,
-      env: { PYTHONUNBUFFERED: '1' },
-    },
+    renderHosted: true,
   },
   {
     id: 'demo-2',
@@ -28,10 +27,7 @@ const demoProjects: Project[] = [
     technologies: ['JavaScript', 'Social Media', 'Web App'],
     featured: true,
     githubUrl: 'https://github.com/amirjimdaniels/Aurora',
-    dockerConfig: {
-      image: 'aurora-demo:latest',
-      port: 3000,
-    },
+    liveUrl: 'http://aurorasocials.social/',
   },
   {
     id: 'demo-3',
@@ -40,71 +36,11 @@ const demoProjects: Project[] = [
     technologies: ['Python', 'Flask', 'REST API', 'CRUD'],
     featured: true,
     githubUrl: 'https://github.com/amirjimdaniels/RestAPI-project',
-    dockerConfig: {
-      image: 'restapi-demo:latest',
-      port: 5000,
-      env: { FLASK_ENV: 'production' },
-    },
+    renderHosted: true,
   },
 ];
 
 export default function DemoSection() {
-  const [containers, setContainers] = useState<Map<string, ContainerInstance>>(new Map());
-  const [selectedProject, setSelectedProject] = useState<string | null>(null);
-
-  const startDemo = async (projectId: string) => {
-    const project = demoProjects.find((p) => p.id === projectId);
-    if (!project?.dockerConfig) return;
-
-    // Create container instance (simulated)
-    const instance: ContainerInstance = {
-      id: `${projectId}-${Date.now()}`,
-      projectId,
-      status: 'starting',
-      createdAt: new Date(),
-    };
-
-    setContainers((prev) => new Map(prev).set(projectId, instance));
-
-    // Simulate startup delay
-    setTimeout(() => {
-      setContainers((prev) => {
-        const updated = new Map(prev);
-        const container = updated.get(projectId);
-        if (container) {
-          container.status = 'running';
-          container.port = project.dockerConfig!.port;
-          container.url = `http://localhost:${project.dockerConfig!.port}`;
-        }
-        return updated;
-      });
-    }, 2000);
-  };
-
-  const stopDemo = async (projectId: string) => {
-    setContainers((prev) => {
-      const updated = new Map(prev);
-      const container = updated.get(projectId);
-      if (container) {
-        container.status = 'stopping';
-      }
-      return updated;
-    });
-
-    // Simulate stop delay
-    setTimeout(() => {
-      setContainers((prev) => {
-        const updated = new Map(prev);
-        updated.delete(projectId);
-        return updated;
-      });
-    }, 1000);
-  };
-
-  const getContainerStatus = (projectId: string) => {
-    return containers.get(projectId);
-  };
-
   return (
     <section id="demo" className="py-20 px-4">
       <div className="mx-auto max-w-7xl">
@@ -114,238 +50,105 @@ export default function DemoSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <h2 className="text-4xl font-bold gradient-text">Live Demo Environment</h2>
-            <span className="px-3 py-1 text-xs font-semibold bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 rounded-full uppercase tracking-wider">
-              WIP
-            </span>
-          </div>
+          <h2 className="text-4xl font-bold gradient-text mb-4">Live Demos</h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            Select a project to spin up a live demo environment. Each demo runs in an isolated
-            Docker container, giving you a real experience of the application.
+            Try out my projects live. Hosted demos may take up to 30 seconds to load on first visit
+            while the server spins up.
           </p>
-        </motion.div>
-
-        {/* Info Banner */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="glass p-6 rounded-xl mb-12 border-l-4 border-primary-500"
-        >
-          <div className="flex items-start gap-4">
-            <div className="flex-shrink-0">
-              <svg className="w-6 h-6 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-2">How It Works</h3>
-              <p className="text-gray-400 text-sm">
-                Each project can be launched in its own Docker container. Click &quot;Start Demo&quot; to spin up
-                the environment. The demo will be available for a limited time. You can stop it anytime
-                to free up resources.
-              </p>
-            </div>
-          </div>
         </motion.div>
 
         {/* Project Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {demoProjects.map((project, index) => {
-            const container = getContainerStatus(project.id);
-            const isRunning = container?.status === 'running';
-            const isStarting = container?.status === 'starting';
-            const isStopping = container?.status === 'stopping';
-
-            return (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Card className="p-6 h-full flex flex-col">
-                  {/* Status Indicator */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <div
-                        className={`w-2 h-2 rounded-full ${
-                          isRunning
-                            ? 'bg-green-500 pulse-dot'
-                            : isStarting || isStopping
-                            ? 'bg-yellow-500 animate-pulse'
-                            : 'bg-gray-500'
-                        }`}
-                      />
-                      <span className="text-xs text-gray-400">
-                        {isRunning
-                          ? 'Running'
-                          : isStarting
-                          ? 'Starting...'
-                          : isStopping
-                          ? 'Stopping...'
-                          : 'Stopped'}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1 text-gray-500">
-                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185z" />
-                      </svg>
-                      <span className="text-xs">Docker</span>
-                    </div>
+          {demoProjects.map((project, index) => (
+            <motion.div
+              key={project.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <Card className="p-6 h-full flex flex-col">
+                {/* Status badge */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${project.liveUrl ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                    <span className="text-xs text-gray-400">
+                      {project.liveUrl ? 'Live' : 'Coming Soon'}
+                    </span>
                   </div>
+                  {project.renderHosted && (
+                    <span className="text-xs text-gray-500">Hosted on Render</span>
+                  )}
+                </div>
 
-                  <h3 className="text-xl font-bold text-white mb-2">{project.name}</h3>
-                  <p className="text-gray-400 text-sm mb-4 flex-grow">{project.description}</p>
+                <h3 className="text-xl font-bold text-white mb-2">{project.name}</h3>
+                <p className="text-gray-400 text-sm mb-4 flex-grow">{project.description}</p>
 
-                  {/* Technologies */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {project.technologies.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-2 py-1 text-xs bg-dark-700 text-gray-300 rounded-md"
-                      >
-                        {tech}
-                      </span>
-                    ))}
+                {/* Cold start notice for Render-hosted projects */}
+                {project.renderHosted && (
+                  <div className="flex items-start gap-2 mb-4 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
+                    <svg className="w-4 h-4 text-yellow-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p className="text-xs text-yellow-400/80">
+                      First load may take ~30s while the server wakes up.
+                    </p>
                   </div>
+                )}
 
-                  {/* Container URL */}
-                  <AnimatePresence>
-                    {isRunning && container?.url && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="mb-4"
-                      >
-                        <div className="glass p-3 rounded-lg">
-                          <p className="text-xs text-gray-400 mb-1">Demo URL:</p>
-                          <a
-                            href={container.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-primary-400 hover:text-primary-300 text-sm break-all"
-                          >
-                            {container.url}
-                          </a>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                {/* Technologies */}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {project.technologies.map((tech) => (
+                    <span
+                      key={tech}
+                      className="px-2 py-1 text-xs bg-dark-700 text-gray-300 rounded-md"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
 
-                  {/* Actions */}
-                  <div className="flex gap-3">
-                    {!isRunning ? (
-                      <Button
-                        onClick={() => startDemo(project.id)}
-                        loading={isStarting}
-                        disabled={isStarting || isStopping}
-                        className="flex-1"
-                      >
-                        {isStarting ? 'Starting...' : 'Start Demo'}
+                {/* Actions */}
+                <div className="flex gap-3">
+                  {project.githubUrl && (
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={project.liveUrl ? '' : 'flex-1'}
+                    >
+                      <Button variant="secondary" size="sm" className={project.liveUrl ? '' : 'w-full'}>
+                        <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                          <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                        </svg>
+                        Code
                       </Button>
-                    ) : (
-                      <>
-                        <a
-                          href={container?.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1"
-                        >
-                          <Button variant="primary" className="w-full">
-                            Open Demo
-                          </Button>
-                        </a>
-                        <Button
-                          variant="secondary"
-                          onClick={() => stopDemo(project.id)}
-                          loading={isStopping}
-                        >
-                          Stop
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                </Card>
-              </motion.div>
-            );
-          })}
+                    </a>
+                  )}
+                  {project.liveUrl ? (
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1"
+                    >
+                      <Button variant="primary" size="sm" className="w-full">
+                        <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                        Open Demo
+                      </Button>
+                    </a>
+                  ) : (
+                    <Button variant="primary" size="sm" disabled className="flex-1">
+                      Coming Soon
+                    </Button>
+                  )}
+                </div>
+              </Card>
+            </motion.div>
+          ))}
         </div>
-
-        {/* Active Containers */}
-        {containers.size > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-12"
-          >
-            <h3 className="text-xl font-semibold text-white mb-4">Active Containers</h3>
-            <Card className="p-4" hover={false}>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="text-left text-gray-400 border-b border-gray-700">
-                      <th className="pb-3 pr-4">Project</th>
-                      <th className="pb-3 pr-4">Status</th>
-                      <th className="pb-3 pr-4">Port</th>
-                      <th className="pb-3 pr-4">Started</th>
-                      <th className="pb-3">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Array.from(containers.entries()).map(([projectId, container]) => {
-                      const project = demoProjects.find((p) => p.id === projectId);
-                      return (
-                        <tr key={container.id} className="border-b border-gray-800">
-                          <td className="py-3 pr-4 text-white">{project?.name}</td>
-                          <td className="py-3 pr-4">
-                            <span
-                              className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
-                                container.status === 'running'
-                                  ? 'bg-green-500/20 text-green-400'
-                                  : container.status === 'starting'
-                                  ? 'bg-yellow-500/20 text-yellow-400'
-                                  : 'bg-gray-500/20 text-gray-400'
-                              }`}
-                            >
-                              <span
-                                className={`w-1.5 h-1.5 rounded-full ${
-                                  container.status === 'running'
-                                    ? 'bg-green-400'
-                                    : container.status === 'starting'
-                                    ? 'bg-yellow-400'
-                                    : 'bg-gray-400'
-                                }`}
-                              />
-                              {container.status}
-                            </span>
-                          </td>
-                          <td className="py-3 pr-4 text-gray-400">{container.port || '-'}</td>
-                          <td className="py-3 pr-4 text-gray-400">
-                            {container.createdAt.toLocaleTimeString()}
-                          </td>
-                          <td className="py-3">
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => stopDemo(projectId)}
-                              disabled={container.status !== 'running'}
-                            >
-                              Stop
-                            </Button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </Card>
-          </motion.div>
-        )}
       </div>
     </section>
   );

@@ -23,12 +23,9 @@ const projects: Project[] = [
     name: 'Aurora',
     description: 'A social media app commemorating the birth of a co-developer\'s daughter. Hello world, Aurora!',
     githubUrl: 'https://github.com/amirjimdaniels/Aurora',
+    liveUrl: 'http://aurorasocials.social/',
     technologies: ['JavaScript', 'Social Media', 'Web App'],
     featured: true,
-    dockerConfig: {
-      image: 'aurora-demo:latest',
-      port: 3000,
-    },
   },
   {
     id: '3',
@@ -108,11 +105,17 @@ export default function ProjectsSection() {
             </motion.h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {otherProjects.map((project, index) => (
-                <ProjectCard
+                <a
                   key={project.id}
-                  project={project}
-                  index={index + featuredProjects.length}
-                />
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <ProjectCard
+                    project={project}
+                    index={index + featuredProjects.length}
+                  />
+                </a>
               ))}
             </div>
           </>
