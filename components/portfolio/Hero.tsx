@@ -52,7 +52,7 @@ export default function Hero() {
             transition={{ delay: 0.4 }}
           >
             Full-stack developer passionate about building exceptional digital experiences.
-            Explore my projects with live demos and video walkthroughs. Easy as that!
+            Explore my projects with links to live demos and video walkthroughs. Easy as that!
           </motion.p>
 
           <motion.div
