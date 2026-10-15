@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import SectionHeading from '@/components/ui/SectionHeading';
 
 const skills = [
   { name: 'Java', level: 100 },
@@ -17,8 +18,8 @@ const skills = [
 ];
 
 const photos = [
-  { src: '/images/amirphoto3.jpg', alt: 'Amir Jim-Daniels - Professional' },
-  { src: '/images/amirphoto4.jpg', alt: 'Amir Jim-Daniels - Personable' },
+  { src: '/images/amirphoto3.jpg', alt: 'Amir Jim-Daniels - Professional', caption: 'Professional' },
+  { src: '/images/amirphoto4.jpg', alt: 'Amir Jim-Daniels - Personable', caption: 'Personable' },
 ];
 
 const courses = [
@@ -34,235 +35,162 @@ const courses = [
   'Elementary Statistics',
 ];
 
+const stats = [
+  { value: '8+', label: 'Years experience' },
+  { value: '8', label: 'Projects completed' },
+];
+
+const strengths = [
+  { title: 'Fast onboarding', text: 'I learn quickly and have experience learning different tech stacks.' },
+  { title: 'Production mindset', text: 'Auth, validation, logging, error handling, and a mindset for test driven development.' },
+  { title: 'Ownership', text: 'Debug, document, and finish features.' },
+];
+
 function PhotoCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const nextPhoto = () => {
-    setCurrentIndex((prev) => (prev + 1) % photos.length);
-  };
-
-  const prevPhoto = () => {
-    setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length);
-  };
+  const nextPhoto = () => setCurrentIndex((prev) => (prev + 1) % photos.length);
+  const prevPhoto = () => setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length);
 
   return (
-    <div className="flex-shrink-0 flex items-center gap-3">
-      {/* Left Arrow */}
-      <button
-        onClick={prevPhoto}
-        className="p-2 rounded-full bg-dark-700/50 hover:bg-primary-500/30 transition-colors group"
-        aria-label="Previous photo"
-      >
-        <svg
-          className="w-5 h-5 text-gray-400 group-hover:text-primary-400 transition-colors"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-
-      {/* Photo Container */}
-      <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-primary-500/30 shadow-lg shadow-primary-500/20 relative">
+    <figure>
+      <div className="relative aspect-[4/5] overflow-hidden bg-paper-deep">
         <AnimatePresence mode="wait">
           <motion.img
             key={currentIndex}
             src={photos[currentIndex].src}
             alt={photos[currentIndex].alt}
-            className="w-full h-full object-cover"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.3 }}
+            className="absolute inset-0 h-full w-full object-cover"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
           />
         </AnimatePresence>
       </div>
 
-      {/* Right Arrow */}
-      <button
-        onClick={nextPhoto}
-        className="p-2 rounded-full bg-dark-700/50 hover:bg-primary-500/30 transition-colors group"
-        aria-label="Next photo"
-      >
-        <svg
-          className="w-5 h-5 text-gray-400 group-hover:text-primary-400 transition-colors"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
-    </div>
+      <figcaption className="mt-3 flex items-center justify-between font-mono text-xs uppercase tracking-widest text-muted">
+        <span>
+          {photos[currentIndex].caption} · {currentIndex + 1}/{photos.length}
+        </span>
+        <span className="flex gap-2">
+          <button onClick={prevPhoto} className="border border-rule px-3 py-1 hover:border-ink hover:text-ink" aria-label="Previous photo">
+            ←
+          </button>
+          <button onClick={nextPhoto} className="border border-rule px-3 py-1 hover:border-ink hover:text-ink" aria-label="Next photo">
+            →
+          </button>
+        </span>
+      </figcaption>
+    </figure>
   );
 }
 
 export default function AboutSection() {
   return (
-    <section id="about" className="py-20 px-4">
-      <div className="mx-auto max-w-7xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl font-bold gradient-text mb-4">About Me</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            A passionate developer with experience in building modern web applications
+    <section id="about" className="mx-auto max-w-6xl px-6 py-24">
+      <SectionHeading number="01" label="About" title="About me" />
+
+      {/* Intro, stats and strengths */}
+      <div className="grid gap-16 md:grid-cols-12">
+        <div className="space-y-6 text-lg leading-relaxed text-ink/80 md:col-span-7">
+          <p>
+            I&apos;m a full-stack developer who loves creating innovative solutions that make a
+            difference. With expertise in modern web technologies, I build scalable applications
+            that are both functional and beautiful.
           </p>
-        </motion.div>
+          <p>
+            Every project I share is published with its full source on GitHub, so you can see
+            how it is built. I believe in learning by doing, and I&apos;m always exploring new
+            technologies to expand my skill set.
+          </p>
+        </div>
 
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="space-y-6"
-          >
-            <p className="text-gray-300 text-lg leading-relaxed">
-              I&apos;m a full-stack developer who loves creating innovative solutions 
-              that make a difference. With expertise in modern web technologies, 
-              I build scalable applications that are both functional and beautiful.
-            </p>
-            <p className="text-gray-300 text-lg leading-relaxed">
-              My projects feature live demos powered by Docker containers, 
-              allowing you to experience them firsthand. I believe in learning 
-              by doing, and I&apos;m always exploring new technologies to expand 
-              my skill set.
-            </p>
-            {/* Stats */}
-            <div className="flex gap-4 pt-4">
-              <div className="glass px-6 py-4 rounded-lg text-center">
-                <div className="text-3xl font-bold text-primary-400">8+</div>
-                <div className="text-gray-400 text-sm">Years Experience</div>
+        <div className="md:col-span-5">
+          <dl className="grid grid-cols-2 border-y border-rule">
+            {stats.map((stat, i) => (
+              <div key={stat.label} className={`py-6 ${i === 0 ? 'pr-6' : 'border-l border-rule pl-6'}`}>
+                <dt className="font-mono text-xs uppercase tracking-widest text-muted">{stat.label}</dt>
+                <dd className="mt-2 font-serif text-6xl leading-none">{stat.value}</dd>
               </div>
-              <div className="glass px-6 py-4 rounded-lg text-center">
-                <div className="text-3xl font-bold text-primary-400">8</div>
-                <div className="text-gray-400 text-sm">Projects Completed</div>
-              </div>
-            </div>
+            ))}
+          </dl>
 
-            {/* What You Get - Recruiter-friendly tiles */}
-            <div className="pt-6">
-              <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">What You Get</h4>
-              <div className="grid gap-3">
-                <div className="glass px-4 py-3 rounded-lg flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary-500/20 flex items-center justify-center">
-                    <svg className="w-4 h-4 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <div className="text-white font-medium text-sm">Fast Onboarding</div>
-                    <div className="text-gray-500 text-xs">I learn quickly and have experience learning different tech stacks</div>
-                  </div>
+          <ol className="mt-10 divide-y divide-rule border-y border-rule">
+            {strengths.map((item, i) => (
+              <li key={item.title} className="grid grid-cols-[2.5rem_1fr] gap-2 py-4">
+                <span className="font-mono text-xs text-muted pt-1">0{i + 1}</span>
+                <div>
+                  <p className="font-medium">{item.title}</p>
+                  <p className="mt-1 text-sm text-muted">{item.text}</p>
                 </div>
-                <div className="glass px-4 py-3 rounded-lg flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
-                    <svg className="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <div className="text-white font-medium text-sm">Production Mindset</div>
-                    <div className="text-gray-500 text-xs">Auth, validation, logging, error handling, and a mindset for test driven development</div>
-                  </div>
-                </div>
-                <div className="glass px-4 py-3 rounded-lg flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
-                    <svg className="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                    </svg>
-                  </div>
-                  <div>
-                    <div className="text-white font-medium text-sm">Ownership</div>
-                    <div className="text-gray-500 text-xs">Debug, document, and finish features</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="space-y-4"
-          >
-            <h3 className="text-xl font-semibold text-white mb-6">Experience Strength</h3>
+      {/* Skills and coursework */}
+      <div className="mt-24 grid gap-16 md:grid-cols-2">
+        <div>
+          <h3 className="mb-8 font-mono text-xs uppercase tracking-widest text-muted">Experience strength</h3>
+          <div className="space-y-5">
             {skills.map((skill, index) => (
-              <div key={skill.name} className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-300">{skill.name}</span>
+              <div key={skill.name}>
+                <div className="mb-2 flex justify-between text-sm">
+                  <span>{skill.name}</span>
+                  <span className="font-mono text-xs text-muted">{skill.level}</span>
                 </div>
-                <div className="h-2 bg-dark-700 rounded-full overflow-hidden">
+                <div className="h-px w-full bg-rule">
                   <motion.div
                     initial={{ width: 0 }}
                     whileInView={{ width: `${skill.level}%` }}
                     viewport={{ once: true }}
-                    transition={{ duration: 1, delay: index * 0.1 }}
-                    className="h-full bg-gradient-to-r from-primary-500 to-purple-500 rounded-full"
+                    transition={{ duration: 1, delay: index * 0.05 }}
+                    className="h-0.5 -translate-y-px bg-ink"
                   />
                 </div>
               </div>
             ))}
-            
-            {/* CS Courses */}
-            <div className="mt-8 pt-6 border-t border-dark-700">
-              <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Computer Science Coursework</h4>
-              <div className="flex flex-wrap gap-2">
-                {courses.map((course) => (
-                  <span key={course} className="px-2 py-1 bg-dark-700/50 text-gray-400 rounded text-xs">
-                    {course}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Personality Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-16 glass p-8 rounded-2xl"
-        >
-          <div className="flex flex-col md:flex-row items-center gap-8">
-            <PhotoCarousel />
-            <div className="text-center md:text-left">
-              <h3 className="text-2xl font-bold text-white mb-3">Why Work With Me?</h3>
-              <p className="text-gray-300 text-lg leading-relaxed mb-4">
-                Personable, loves collaborating, and good sense of humour. Come on! Who wouldn&apos;t want to work with this guy? Just look at that face! 😄
-              </p>
-              <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-                <span className="px-3 py-1 bg-primary-500/20 text-primary-300 rounded-full text-sm">Team Player</span>
-                <span className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm">Great Communicator</span>
-                <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm">Fun to Work With</span>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Built With Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-12 text-center"
-        >
-          <p className="text-gray-500 text-sm mb-3">This portfolio was built with</p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <span className="px-3 py-1.5 glass rounded-full text-xs text-gray-300">Next.js 14</span>
-            <span className="px-3 py-1.5 glass rounded-full text-xs text-gray-300">TypeScript</span>
-            <span className="px-3 py-1.5 glass rounded-full text-xs text-gray-300">Tailwind CSS</span>
-            <span className="px-3 py-1.5 glass rounded-full text-xs text-gray-300">Framer Motion</span>
-            <span className="px-3 py-1.5 glass rounded-full text-xs text-gray-300">Docker</span>
-          </div>
-        </motion.div>
+        <div>
+          <h3 className="mb-8 font-mono text-xs uppercase tracking-widest text-muted">Computer science coursework</h3>
+          <ul className="grid gap-x-6 sm:grid-cols-2">
+            {courses.map((course) => (
+              <li key={course} className="border-b border-rule py-3 text-sm">
+                {course}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
+
+      {/* Personality */}
+      <div className="mt-24 grid gap-12 border-t border-ink pt-12 md:grid-cols-[minmax(0,2fr)_3fr] md:items-center">
+        <div className="max-w-sm">
+          <PhotoCarousel />
+        </div>
+        <div>
+          <h3 className="font-mono text-xs uppercase tracking-widest text-muted">Why work with me?</h3>
+          <p className="mt-6 font-serif text-4xl leading-tight md:text-5xl">
+            Personable, loves collaborating, and has a <span className="italic">good sense of humour.</span>
+          </p>
+          <p className="mt-6 max-w-xl text-muted">
+            Come on! Who wouldn&apos;t want to work with this guy? Just look at that face!
+          </p>
+          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 font-mono text-sm">
+            <li>Team player</li>
+            <li className="text-accent">Great communicator</li>
+            <li>Fun to work with</li>
+          </ul>
+        </div>
+      </div>
+
+      <p className="mt-24 font-mono text-xs uppercase tracking-widest text-muted">
+        Built with Next.js · TypeScript · Tailwind CSS · Framer Motion · Docker
+      </p>
     </section>
   );
 }

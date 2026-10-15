@@ -1,10 +1,8 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import ProjectCard from './ProjectCard';
+import SectionHeading from '@/components/ui/SectionHeading';
 import { Project } from '@/types';
 
-// Your actual GitHub projects
+// Every project links to its GitHub repository. Hosted demos are no longer running.
 const projects: Project[] = [
   {
     id: '1',
@@ -13,17 +11,12 @@ const projects: Project[] = [
     githubUrl: 'https://github.com/amirjimdaniels/RAG-demo',
     technologies: ['Python', 'RAG', 'LLM', 'AI'],
     featured: true,
-    dockerConfig: {
-      image: 'rag-demo:latest',
-      port: 8000,
-    },
   },
   {
     id: '2',
     name: 'Aurora',
     description: 'A social media app commemorating the birth of a co-developer\'s daughter. Hello world, Aurora!',
     githubUrl: 'https://github.com/amirjimdaniels/Aurora',
-    liveUrl: 'http://aurorasocials.social/',
     technologies: ['JavaScript', 'Social Media', 'Web App'],
     featured: true,
   },
@@ -34,10 +27,6 @@ const projects: Project[] = [
     githubUrl: 'https://github.com/amirjimdaniels/RestAPI-project',
     technologies: ['Python', 'Flask', 'REST API', 'CRUD'],
     featured: true,
-    dockerConfig: {
-      image: 'restapi-demo:latest',
-      port: 5000,
-    },
   },
   {
     id: '4',
@@ -66,61 +55,26 @@ const projects: Project[] = [
 ];
 
 export default function ProjectsSection() {
-  const featuredProjects = projects.filter((p) => p.featured);
-  const otherProjects = projects.filter((p) => !p.featured);
+  // Featured projects first, then the rest, keeping their original order within each group
+  const ordered = [
+    ...projects.filter((p) => p.featured),
+    ...projects.filter((p) => !p.featured),
+  ];
 
   return (
-    <section id="projects" className="py-20 px-4">
-      <div className="mx-auto max-w-7xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl font-bold gradient-text mb-4">Featured Projects</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Explore my latest work with video demos and live previews.
-            Click on any project to see it in action.
-          </p>
-        </motion.div>
+    <section id="projects" className="mx-auto max-w-6xl px-6 py-24">
+      <SectionHeading
+        number="02"
+        label="Projects"
+        title="Projects"
+        description="Each project links to its source code on GitHub."
+      />
 
-        {/* Featured Projects Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {featuredProjects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
-          ))}
-        </div>
-
-        {/* Other Projects */}
-        {otherProjects.length > 0 && (
-          <>
-            <motion.h3
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-2xl font-bold text-white mb-8 text-center"
-            >
-              More Projects
-            </motion.h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {otherProjects.map((project, index) => (
-                <a
-                  key={project.id}
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <ProjectCard
-                    project={project}
-                    index={index + featuredProjects.length}
-                  />
-                </a>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
+      <ol className="border-t border-rule">
+        {ordered.map((project, index) => (
+          <ProjectCard key={project.id} project={project} index={index} />
+        ))}
+      </ol>
     </section>
   );
 }

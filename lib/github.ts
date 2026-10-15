@@ -1,33 +1,36 @@
 import { Octokit } from 'octokit';
 import { GitHubRepo, GitHubStats } from '@/types';
 
-const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN,
-});
+function createOctokit(token?: string) {
+  return new Octokit(token ? { auth: token } : {});
+}
 
 export async function getRepos(username: string): Promise<GitHubRepo[]> {
+  const token = process.env.GITHUB_TOKEN;
+  const listRepos = (client: Octokit) =>
+    client.rest.repos
+      .listForUser({ username, sort: 'updated', per_page: 100, type: 'owner' })
+      .then((res) => res.data as GitHubRepo[]);
+
   try {
-    const { data } = await octokit.rest.repos.listForUser({
-      username,
-      sort: 'updated',
-      per_page: 100,
-      type: 'owner',
-    });
-    
-    return data as GitHubRepo[];
+    return await listRepos(createOctokit(token));
   } catch (error) {
-    console.error('Error fetching repos:', error);
-    return [];
+    if (!token) {
+      throw error;
+    }
+    // Token may be expired/revoked; public repo listings don't require auth, so retry without it.
+    console.warn('GitHub request with token failed, retrying unauthenticated:', error);
+    return listRepos(createOctokit());
   }
 }
 
 export async function getRepo(owner: string, repo: string): Promise<GitHubRepo | null> {
   try {
-    const { data } = await octokit.rest.repos.get({
+    const { data } = await createOctokit(process.env.GITHUB_TOKEN).rest.repos.get({
       owner,
       repo,
     });
-    
+
     return data as GitHubRepo;
   } catch (error) {
     console.error('Error fetching repo:', error);
